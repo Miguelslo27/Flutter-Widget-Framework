@@ -39,7 +39,9 @@ class MyScaffold extends StatelessWidget {
           //     ]
           //   ),
           // ),
-          MyAppBar(),
+          MyAppBar(
+            title: "New title for navbar"
+          ),
           Expanded(
             child: Center(
               child: Text("Hello World!")
@@ -52,6 +54,10 @@ class MyScaffold extends StatelessWidget {
 }
 
 class MyAppBar extends StatelessWidget {
+  MyAppBar({@required this.title});
+
+  final String title;
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,7 +73,7 @@ class MyAppBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              "Some title",
+              title,
               style: Theme.of(context).primaryTextTheme.title
             )
           ),
