@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(
-    title: "Flutter Widget Framework",
-    home: MyScaffold()
-  ));
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Flutter Widget Framework",
+      home: MyScaffold()
+    );
+  }
 }
 
 class MyScaffold extends StatelessWidget {
@@ -40,7 +45,7 @@ class MyScaffold extends StatelessWidget {
           //   ),
           // ),
           MyAppBar(
-            title: "New title for navbar"
+            title: "Title for navbar"
           ),
           Expanded(
             child: Center(
