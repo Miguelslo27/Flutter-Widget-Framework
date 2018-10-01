@@ -35,7 +35,15 @@ class MyScaffold extends StatelessWidget {
       ),
       // Sustituí el expand hijo de Material por el argumento body del Scaffold
       body: Center(
-        child: MyButton()
+        // child: MyButton()
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget> [
+            Text("Testing with MyButton\n"),
+            MyButton(),
+            Counter()
+          ]
+        )
       ),
       // Agregue un action flotante
       floatingActionButton: FloatingActionButton(
@@ -66,6 +74,34 @@ class MyButton extends StatelessWidget {
           child: Text("Engage")
         )
       )
+    );
+  }
+}
+
+class Counter extends StatefulWidget {
+  @override
+  _CounterState createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> {
+  int _counter = 0;
+
+  void _increment() {
+    setState(() {
+      _counter ++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget> [
+        RaisedButton(
+          onPressed: _increment,
+          child: Text("Increment"),
+        ),
+        Text("Count: $_counter")
+      ]
     );
   }
 }
