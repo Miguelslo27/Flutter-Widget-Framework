@@ -35,7 +35,7 @@ class MyScaffold extends StatelessWidget {
       ),
       // Sustituí el expand hijo de Material por el argumento body del Scaffold
       body: Center(
-        child: Text("Hello World!")
+        child: MyButton()
       ),
       // Agregue un action flotante
       floatingActionButton: FloatingActionButton(
@@ -43,6 +43,29 @@ class MyScaffold extends StatelessWidget {
         child: Icon(Icons.add),
         onPressed: null
       ),
+    );
+  }
+}
+
+class MyButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print("My button was tapped!");
+      },
+      child: Container(
+        height: 36.0,
+        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: Colors.lightGreen[500]
+        ),
+        child: Center(
+          child: Text("Engage")
+        )
+      )
     );
   }
 }
