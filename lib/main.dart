@@ -7,124 +7,97 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Flutter Widget Framework",
-      home: MyScaffold()
-    );
-  }
-}
-
-class MyScaffold extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Sustitui Material por Scaffold 
-    return Scaffold(
-      // Utilize el argumento appBar con el Widget AppBar en lugar de mi custom MyAppBar
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          tooltip: "Navigation menu",
-          onPressed: null
-        ),
-        title: Text("Example title"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search),
-            tooltip: "Search",
-            onPressed: null
-          )
+      home: ShoppingList(
+        products: <Product>[
+          Product(name: "Eggs"),
+          Product(name: "Flour"),
+          Product(name: "Chocolate")
         ]
-      ),
-      // Sustituí el expand hijo de Material por el argumento body del Scaffold
-      body: Center(
-        // child: MyButton()
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
-            Text("Testing with MyButton\n"),
-            MyButton(),
-            Counter()
-          ]
-        )
-      ),
-      // Agregue un action flotante
-      floatingActionButton: FloatingActionButton(
-        tooltip: "Add",
-        child: Icon(Icons.add),
-        onPressed: null
-      ),
-    );
-  }
-}
-
-class MyButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        print("My button was tapped!");
-      },
-      child: Container(
-        height: 36.0,
-        padding: const EdgeInsets.all(8.0),
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: Colors.lightGreen[500]
-        ),
-        child: Center(
-          child: Text("Engage")
-        )
       )
     );
   }
 }
 
-// This works as the parent of the behavior of the counter
-class CounterDisplay extends StatelessWidget {
-  CounterDisplay({this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text("Count: $count");
-  }
+class Product {
+  const Product({this.name});
+  final String name;
 }
 
-class CounterIncrementor extends StatelessWidget {
-  CounterIncrementor({this.onPressed});
+typedef void CartChangeCallback(Product product, bool inCart);
 
-  final VoidCallback onPressed;
+class ShoppingListItem extends StatelessWidget {
+  ShoppingListItem({Product product, this.inCart, this.onCartChanged}): product = product, super(key: ObjectKey(product));
+
+  final Product product;
+  final bool inCart;
+  final CartChangeCallback onCartChanged;
+
+  Color _getColor(BuildContext context) {
+    return inCart ? Colors.black54 : Theme.of(context).primaryColor;
+  }
+
+  TextStyle _getTextStyle(BuildContext context) {
+    if (!inCart) return null;
+
+    return TextStyle(
+      color: Colors.black54,
+      decoration: TextDecoration.lineThrough
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      onPressed: onPressed,
-      child: Text("Increment")
+    return ListTile(
+      onTap: () {
+        onCartChanged(product, !inCart);
+      },
+      leading: CircleAvatar(
+        backgroundColor: _getColor(context),
+        child: Text(product.name[0])
+      ),
+      title: Text(product.name, style: _getTextStyle(context))
     );
   }
 }
 
-class Counter extends StatefulWidget {
+class ShoppingList extends StatefulWidget {
+  ShoppingList({Key key, this.products}): super(key: key);
+
+  final List<Product> products;
+
   @override
-  _CounterState createState() => _CounterState();
+  _ShoppingListState createState() => _ShoppingListState();
 }
 
-class _CounterState extends State<Counter> {
-  int _counter = 0;
+class _ShoppingListState extends State<ShoppingList> {
+  Set<Product> _shoppingCart = Set<Product>();
 
-  void _increment() {
+  void _handleCartChanged(Product product, bool inCart) {
     setState(() {
-      _counter ++;
+      if (inCart) {
+        _shoppingCart.add(product);
+      } else {
+        _shoppingCart.remove(product);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget> [
-        CounterIncrementor(onPressed: _increment),
-        CounterDisplay(count: _counter)
-      ]
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Shopping List")
+      ),
+      body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 8.0),
+        children: widget.products.map((Product product) {
+          return ShoppingListItem(
+            product: product,
+            inCart: _shoppingCart.contains(product),
+            onCartChanged: _handleCartChanged
+          );
+        }).toList()
+      )
     );
   }
 }
